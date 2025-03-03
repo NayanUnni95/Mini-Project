@@ -1,6 +1,3 @@
-env
-.early.coverage
-
 # Logs
 logs
 *.log
