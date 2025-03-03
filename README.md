@@ -29,3 +29,10 @@ pip freeze > requirements.txt
 ```bash
 python3 <script name>
 ```
+
+### Our Project features(todo)
+
+- Login validation
+- Signup verification and private key generation
+- Password encrypt and decrypt
+- Data stegnography
