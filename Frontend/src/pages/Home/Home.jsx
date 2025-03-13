@@ -1,12 +1,27 @@
-// import { Button } from '../../components/ui/button';
 import React from 'react';
+import { BreadcrumbWithCustomSeparator } from '@/components/BreadcrumbWithCustomSeparator';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import { Separator } from '@/components/ui/separator';
 
 function Home() {
   return (
     <div
-      style={{ width: '100%', height: '100vh', backgroundColor: 'rgb(230, 230, 230)' }}
+      className="w-full h-screen"
+      style={{
+        backgroundColor: 'rgb(230, 230, 230)',
+      }}
     >
-      {/* <Button>Click me</Button> */}
+      <div className="flex items-center pt-[10px] pl-[20px] pb-[10px]">
+        <div className="">
+          <SidebarTrigger />
+        </div>
+        <Separator
+          orientation="vertical"
+          className="h-[15px] m-[10px] mr-[17px] bg-red-900"
+        />
+        <BreadcrumbWithCustomSeparator />
+      </div>
+      <div className="w-full h-full bg-gray-400 grid"></div>
     </div>
   );
 }
