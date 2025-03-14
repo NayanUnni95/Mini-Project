@@ -1,10 +1,10 @@
-import { DataTableDemo } from '@/components/DataTable';
+import { DataTable } from '@/components/DataTable';
 import React from 'react';
 
 function Logs() {
   return (
-    <div>
-      <DataTableDemo />
+    <div className="w-full p-[2rem] bg-white">
+      <DataTable />
     </div>
   );
 }

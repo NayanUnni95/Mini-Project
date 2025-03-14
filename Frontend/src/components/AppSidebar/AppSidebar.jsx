@@ -1,5 +1,4 @@
 import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
-
 import {
   Sidebar,
   SidebarContent,
@@ -12,24 +11,24 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-
+import { Link } from 'react-router-dom';
 // Menu items.
 const items = [
   {
     title: 'Dashboard',
-    url: '#',
+    url: '/',
     icon: Home,
   },
   {
-    title: 'Inbox',
-    url: '#',
+    title: 'Logs',
+    url: '/logs',
     icon: Inbox,
   },
-  {
-    title: 'Calendar',
-    url: '#',
-    icon: Calendar,
-  },
+  // {
+  //   title: 'Calendar',
+  //   url: '#',
+  //   icon: Calendar,
+  // },
   {
     title: 'Search',
     url: '#',
@@ -39,6 +38,23 @@ const items = [
     title: 'Settings',
     url: '#',
     icon: Settings,
+  },
+];
+const footer = [
+  {
+    title: 'Profile',
+    url: '/',
+    icon: Home,
+  },
+  {
+    title: 'Setting',
+    url: '/',
+    icon: Home,
+  },
+  {
+    title: 'Logout',
+    url: '/',
+    icon: Home,
   },
 ];
 
@@ -54,10 +70,10 @@ function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -66,6 +82,25 @@ function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter />
+      {/* <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {footer.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <Link to={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent> */}
     </Sidebar>
   );
 }

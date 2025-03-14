@@ -15,7 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export function EncDecTabs() {
+export function PassGeneration() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [desc, setDesc] = useState('');
@@ -46,10 +46,10 @@ export function EncDecTabs() {
   }, [username, password, desc, key, file]);
   return (
     <Tabs defaultValue="encrypt" className="w-[95%]">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="encrypt">Encryption</TabsTrigger>
-        <TabsTrigger value="decrypt">Decryption</TabsTrigger>
-      </TabsList>
+      {/* <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="encrypt">Auto Generation</TabsTrigger>
+        <TabsTrigger value="decrypt">Manuel Generation</TabsTrigger>
+      </TabsList> */}
       <TabsContent value="encrypt">
         <Card>
           <CardHeader>
@@ -60,15 +60,15 @@ export function EncDecTabs() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <div className="space-y-1">
+            {/* <div className="space-y-1">
               <Input
                 id="username"
                 value={username}
                 placeholder="username"
                 onChange={(e) => setUsername(e.target.value)}
               />
-            </div>
-            <div className="space-y-1">
+            </div> */}
+            {/* <div className="space-y-1">
               <Input
                 id="password"
                 value={password}
@@ -84,7 +84,7 @@ export function EncDecTabs() {
                 placeholder="Type your message here."
                 onChange={(e) => setDesc(e.target.value)}
               />
-            </div>
+            </div> */}
             {/* <div className="space-y-1">
               <Input
                 id="key"
@@ -93,7 +93,7 @@ export function EncDecTabs() {
                 onChange={(e) => setKey(e.target.value)}
               />
             </div> */}
-            <div className="space-y-1">
+            {/* <div className="space-y-1">
               <Label htmlFor="name">Image for store Data.</Label>
               <Input
                 id="file"
@@ -102,17 +102,17 @@ export function EncDecTabs() {
                 placeholder="Encryption key"
                 onChange={(e) => setFile(e.target.value)}
               />
-            </div>
+            </div> */}
           </CardContent>
           <CardFooter>
             <Button
-              onClick={() => {
-                const cipherText = encrypt('hello guys', 'pass');
-                console.log(cipherText);
-                console.log(decrypt(cipherText, 'pass'));
-              }}
+            // onClick={() => {
+            //   const cipherText = encrypt('hello guys', 'pass');
+            //   console.log(cipherText);
+            //   console.log(decrypt(cipherText, 'pass'));
+            // }}
             >
-              Make Secure
+              Generate
             </Button>
           </CardFooter>
         </Card>
