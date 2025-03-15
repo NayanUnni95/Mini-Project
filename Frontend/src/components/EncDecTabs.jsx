@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
-import CryptoJs from 'crypto-js';
-// import stegnography from 'ste'
+import { encryptMessage, decryptMessage } from '@/lib/dataManipulation';
+import {
+  getBase64FromFile,
+  encodeMessageInImage,
+  decodeMessageFromImage,
+  handleSaveImage,
+} from '@/lib/steg';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -19,31 +24,36 @@ export function EncDecTabs() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [desc, setDesc] = useState('');
-  const [key, setKey] = useState('');
-  const [file, setFile] = useState('');
-  const [jsonData, setJsonData] = useState({
-    username: '',
-    pass: '',
-    desc: '',
-  });
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [hiddenFile, setHiddenFile] = useState(null);
 
-  const encrypt = (msg, key) => {
-    return CryptoJs.AES.encrypt(msg, key).toString();
+  const handleEncodeImage = async (username, password, desc, selectedFile) => {
+    try {
+      const base64Image = await getBase64FromFile(selectedFile);
+      const encodedImage = await encodeMessageInImage(
+        base64Image,
+        desc,
+        'pass'
+      );
+      setHiddenFile(encodedImage);
+      console.log(encodedImage);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  const handleDecodeImage = async () => {
+    try {
+      const base64Image = await getBase64FromFile(hiddenFile);
+      const decodedMessage = await decodeMessageFromImage(base64Image, 'pass');
+      console.log(decodedMessage);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
-  const decrypt = (cipherText, key) => {
-    const decryptMessage = CryptoJs.AES.decrypt(cipherText, key);
-    return decryptMessage.toString(CryptoJs.enc.Utf8);
-  };
-
-  const convertToJson = (username, password, desc) => {
-    setJsonData({ username, pass: password, desc });
-    return jsonData;
-  };
-
-  useEffect(() => {
-    console.log(username, password, desc, key, file);
-  }, [username, password, desc, key, file]);
+  // useEffect(() => {
+  // console.log(username, password, desc, selectedFile);
+  // }, [username, password, desc, selectedFile]);
   return (
     <Tabs defaultValue="encrypt" className="w-[95%]">
       <TabsList className="grid w-full grid-cols-2">
@@ -85,35 +95,26 @@ export function EncDecTabs() {
                 onChange={(e) => setDesc(e.target.value)}
               />
             </div>
-            {/* <div className="space-y-1">
-              <Input
-                id="key"
-                value={key}
-                placeholder="Encryption key"
-                onChange={(e) => setKey(e.target.value)}
-              />
-            </div> */}
             <div className="space-y-1">
               <Label htmlFor="name">Image for store Data.</Label>
               <Input
                 id="file"
-                value={file}
                 type="file"
                 placeholder="Encryption key"
-                onChange={(e) => setFile(e.target.value)}
+                onChange={(e) => setSelectedFile(e.target.files[0])}
               />
             </div>
           </CardContent>
           <CardFooter>
             <Button
               onClick={() => {
-                const cipherText = encrypt('hello guys', 'pass');
-                console.log(cipherText);
-                console.log(decrypt(cipherText, 'pass'));
+                handleEncodeImage(username, password, desc, selectedFile);
               }}
             >
               Make Secure
             </Button>
+            <Button onClick={() => handleSaveImage(hiddenFile)}>save</Button>
+            <img src={hiddenFile} alt="" />
           </CardFooter>
         </Card>
       </TabsContent>
@@ -137,7 +138,7 @@ export function EncDecTabs() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button>Make Public</Button>
+            <Button onClick={handleDecodeImage}>Make Public</Button>
           </CardFooter>
         </Card>
       </TabsContent>
