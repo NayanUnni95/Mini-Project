@@ -1,10 +1,11 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 
 export const UserDataContext = createContext();
 
 function UserInfoContext({ children }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [url, setUrl] = useState('');
   const [desc, setDesc] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [hiddenFile, setHiddenFile] = useState(null);
@@ -12,6 +13,9 @@ function UserInfoContext({ children }) {
   const [decryptData, setDecryptData] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
   const [imgSrc, setImgSrc] = useState(null);
+  useEffect(() => {
+    console.log(username, password, url, desc, selectedFile);
+  }, [username, password, url, desc, selectedFile]);
 
   return (
     <UserDataContext.Provider
@@ -20,6 +24,8 @@ function UserInfoContext({ children }) {
         setUsername,
         password,
         setPassword,
+        url,
+        setUrl,
         desc,
         setDesc,
         selectedFile,

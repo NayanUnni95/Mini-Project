@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
+import { Home, Logs, Search, Settings, LayoutDashboard } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -12,23 +12,19 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { Link } from 'react-router-dom';
+import { Combobox } from '../Combobox';
 // Menu items.
 const items = [
   {
     title: 'Dashboard',
     url: '/',
-    icon: Home,
+    icon: LayoutDashboard,
   },
   {
     title: 'Logs',
     url: '/logs',
-    icon: Inbox,
+    icon: Logs,
   },
-  // {
-  //   title: 'Calendar',
-  //   url: '#',
-  //   icon: Calendar,
-  // },
   {
     title: 'Search',
     url: '#',
@@ -61,7 +57,11 @@ const footer = [
 function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarHeader />
+      <SidebarHeader>
+        <SidebarGroup>
+          <Combobox />
+        </SidebarGroup>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
@@ -81,26 +81,11 @@ function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
-      {/* <SidebarContent>
+      <SidebarFooter>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {footer.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link to={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
+          <Combobox />
         </SidebarGroup>
-      </SidebarContent> */}
+      </SidebarFooter>
     </Sidebar>
   );
 }

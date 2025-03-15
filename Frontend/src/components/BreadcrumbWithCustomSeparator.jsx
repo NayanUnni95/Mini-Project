@@ -13,9 +13,7 @@ export function BreadcrumbWithCustomSeparator() {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink>
-            <Link to="/">Home</Link>
-          </BreadcrumbLink>
+          <Link to="/">Home</Link>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>

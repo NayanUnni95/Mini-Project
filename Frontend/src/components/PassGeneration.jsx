@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import CryptoJs from 'crypto-js';
-// import stegnography from 'ste'
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -41,9 +40,9 @@ export function PassGeneration() {
     return jsonData;
   };
 
-  useEffect(() => {
-    console.log(username, password, desc, key, file);
-  }, [username, password, desc, key, file]);
+  // useEffect(() => {
+  //   console.log(username, password, desc, key, file);
+  // }, [username, password, desc, key, file]);
   return (
     <Tabs defaultValue="encrypt" className="w-[95%]">
       {/* <TabsList className="grid w-full grid-cols-2">

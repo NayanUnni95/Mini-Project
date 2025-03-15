@@ -1,5 +1,9 @@
 import { useContext } from 'react';
-import { encryptMessage, decryptMessage } from '@/lib/dataManipulation';
+import {
+  encryptMessage,
+  decryptMessage,
+  cleanUpData,
+} from '@/lib/dataManipulation';
 import {
   getBase64FromFile,
   encodeMessageInImage,
@@ -20,6 +24,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserDataContext } from '@/context/UserInfoContext';
+import { KeyRound, FileLock, ImageDown } from 'lucide-react';
 
 export function EncDecTabs() {
   const {
@@ -27,6 +32,8 @@ export function EncDecTabs() {
     setUsername,
     password,
     setPassword,
+    url,
+    setUrl,
     desc,
     setDesc,
     selectedFile,
@@ -39,7 +46,14 @@ export function EncDecTabs() {
     setImgSrc,
   } = useContext(UserDataContext);
 
-  const handleEncodeImage = async (username, password, desc, selectedFile) => {
+  const handleEncodeImage = async (
+    username,
+    password,
+    url,
+    desc,
+    selectedFile
+  ) => {
+    const stringData = cleanUpData(username, password, url, desc);
     try {
       if (
         typeof selectedFile === 'string' &&
@@ -47,7 +61,7 @@ export function EncDecTabs() {
       ) {
         const encodedImage = await encodeMessageInImage(
           selectedFile,
-          desc,
+          stringData,
           'pass'
         );
         setHiddenFile(encodedImage);
@@ -55,7 +69,7 @@ export function EncDecTabs() {
         const base64Image = await getBase64FromFile(selectedFile);
         const encodedImage = await encodeMessageInImage(
           base64Image,
-          desc,
+          stringData,
           'pass'
         );
         setHiddenFile(encodedImage);
@@ -92,7 +106,7 @@ export function EncDecTabs() {
         <TabsTrigger value="decrypt">Decryption</TabsTrigger>
       </TabsList>
       <TabsContent value="encrypt">
-        <Card>
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>Encryption</CardTitle>
             <CardDescription>
@@ -119,6 +133,14 @@ export function EncDecTabs() {
               />
             </div>
             <div className="space-y-1">
+              <Input
+                id="url"
+                value={url}
+                placeholder="url"
+                onChange={(e) => setUrl(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1">
               <Textarea
                 id="desc"
                 value={desc}
@@ -140,15 +162,19 @@ export function EncDecTabs() {
               />
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="w-full flex items-center justify-evenly">
             <Button
               onClick={() => {
-                handleEncodeImage(username, password, desc, selectedFile);
+                // console.log(cleanUpData(username, password, url, desc));
+                handleEncodeImage(username, password, url, desc, selectedFile);
               }}
             >
-              Make Secure
+              Make Secure <FileLock />
             </Button>
-            <Button onClick={() => handleSaveImage(hiddenFile)}>save</Button>
+            <Button onClick={() => handleSaveImage(hiddenFile)}>
+              Save Image
+              <ImageDown />
+            </Button>
           </CardFooter>
         </Card>
       </TabsContent>
@@ -179,7 +205,9 @@ export function EncDecTabs() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button onClick={handleDecodeImage}>Make Public</Button>
+            <Button onClick={handleDecodeImage}>
+              Make Public <KeyRound />
+            </Button>
           </CardFooter>
         </Card>
       </TabsContent>
