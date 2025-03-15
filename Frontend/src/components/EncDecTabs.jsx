@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useContext } from 'react';
 import { encryptMessage, decryptMessage } from '@/lib/dataManipulation';
 import {
   getBase64FromFile,
@@ -19,31 +19,55 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { UserDataContext } from '@/context/UserInfoContext';
 
 export function EncDecTabs() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [desc, setDesc] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [hiddenFile, setHiddenFile] = useState(null);
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    desc,
+    setDesc,
+    selectedFile,
+    setSelectedFile,
+    hiddenFile,
+    setHiddenFile,
+    decryptFile,
+    setDecryptFile,
+    imgSrc,
+    setImgSrc,
+  } = useContext(UserDataContext);
 
   const handleEncodeImage = async (username, password, desc, selectedFile) => {
     try {
-      const base64Image = await getBase64FromFile(selectedFile);
-      const encodedImage = await encodeMessageInImage(
-        base64Image,
-        desc,
-        'pass'
-      );
-      setHiddenFile(encodedImage);
-      console.log(encodedImage);
+      if (
+        typeof selectedFile === 'string' &&
+        selectedFile.startsWith('data:')
+      ) {
+        const encodedImage = await encodeMessageInImage(
+          selectedFile,
+          desc,
+          'pass'
+        );
+        setHiddenFile(encodedImage);
+      } else {
+        const base64Image = await getBase64FromFile(selectedFile);
+        const encodedImage = await encodeMessageInImage(
+          base64Image,
+          desc,
+          'pass'
+        );
+        setHiddenFile(encodedImage);
+        console.log(encodedImage);
+      }
     } catch (error) {
       console.log(error.message);
     }
   };
   const handleDecodeImage = async () => {
     try {
-      const base64Image = await getBase64FromFile(hiddenFile);
+      const base64Image = await getBase64FromFile(decryptFile);
       const decodedMessage = await decodeMessageFromImage(base64Image, 'pass');
       console.log(decodedMessage);
     } catch (error) {
@@ -51,9 +75,16 @@ export function EncDecTabs() {
     }
   };
 
-  // useEffect(() => {
-  // console.log(username, password, desc, selectedFile);
-  // }, [username, password, desc, selectedFile]);
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImgSrc(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   return (
     <Tabs defaultValue="encrypt" className="w-[95%]">
       <TabsList className="grid w-full grid-cols-2">
@@ -101,7 +132,11 @@ export function EncDecTabs() {
                 id="file"
                 type="file"
                 placeholder="Encryption key"
-                onChange={(e) => setSelectedFile(e.target.files[0])}
+                accept="image/png, image/jpg, image/jpeg"
+                onChange={(e) => {
+                  handleImageChange(e);
+                  setSelectedFile(e.target.files[0]);
+                }}
               />
             </div>
           </CardContent>
@@ -114,7 +149,6 @@ export function EncDecTabs() {
               Make Secure
             </Button>
             <Button onClick={() => handleSaveImage(hiddenFile)}>save</Button>
-            <img src={hiddenFile} alt="" />
           </CardFooter>
         </Card>
       </TabsContent>
@@ -134,7 +168,14 @@ export function EncDecTabs() {
             </div>
             <div className="space-y-1">
               <Label htmlFor="name">Image for store Data.</Label>
-              <Input id="file" type="file" placeholder="Encryption key" />
+              <Input
+                id="file"
+                type="file"
+                placeholder="Encryption key"
+                onChange={(e) => {
+                  setDecryptFile(e.target.files[0]);
+                }}
+              />
             </div>
           </CardContent>
           <CardFooter>

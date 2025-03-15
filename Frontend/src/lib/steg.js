@@ -1,13 +1,11 @@
 import { AES, enc } from 'crypto-js';
 
-// Constants (same as in the original code)
 const BITS_PER_CHAR = 8;
 const MESSAGE_BORDER = '|';
 const MESSAGE_HEADER = 'STEGO:';
 const MESSAGE_FORMAT =
   MESSAGE_HEADER + '<L>' + MESSAGE_BORDER + '<M>' + MESSAGE_BORDER;
 
-// Helper functions for image manipulation
 function getImageDataFromBase64Image(base64Image) {
   return new Promise((resolve) => {
     const imageEl = new Image();
@@ -77,7 +75,6 @@ export const encodeMessageInImage = async (base64Image, message, password) => {
         .padStart(BITS_PER_CHAR, '0');
     }
 
-    // Check if message fits in the image
     if (binaryMessage.length > 3 * imageData.height * imageData.width) {
       throw new Error('Message length is too large to hide in image');
     }
@@ -206,6 +203,9 @@ export const decodeMessageFromImage = async (base64Image, password) => {
 
 // Helper function to handle file upload and convert to base64
 export const getBase64FromFile = (file) => {
+  if (!(file instanceof Blob)) {
+    return Promise.reject(new Error('Invalid file: not a Blob or File object'));
+  }
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -223,3 +223,4 @@ export const handleSaveImage = (outputImage) => {
     link.click();
   }
 };
+export { getImageDataFromBase64Image };
