@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import CryptoJs from 'crypto-js';
+import CryptoJS from 'crypto-js';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -10,46 +10,70 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { Copy } from 'lucide-react';
+import { toast } from 'sonner';
+import { Toaster } from '@/components/ui/sonner';
 
 export function PassGeneration() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [desc, setDesc] = useState('');
-  const [key, setKey] = useState('');
-  const [file, setFile] = useState('');
-  const [jsonData, setJsonData] = useState({
-    username: '',
-    pass: '',
-    desc: '',
-  });
+  const [selectedValue, setSelectedValue] = useState('all');
+  const [finalPassword, setFinalPassword] = useState('');
+  useEffect(() => {
+    console.log('Selected Value:', selectedValue);
+  }, [selectedValue]);
 
-  const encrypt = (msg, key) => {
-    return CryptoJs.AES.encrypt(msg, key).toString();
+  const generateTextPassword = (length) => {
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    return generateRandomString(charset, length);
   };
 
-  const decrypt = (cipherText, key) => {
-    const decryptMessage = CryptoJs.AES.decrypt(cipherText, key);
-    return decryptMessage.toString(CryptoJs.enc.Utf8);
+  const generateNumberPassword = (length) => {
+    const charset = '0123456789';
+    return generateRandomString(charset, length);
   };
 
-  const convertToJson = (username, password, desc) => {
-    setJsonData({ username, pass: password, desc });
-    return jsonData;
+  const generateSpecialCharPassword = (length) => {
+    const charset = '!@#$%^&*()_+[]{}|;:,.<>?';
+    return generateRandomString(charset, length);
   };
 
-  // useEffect(() => {
-  //   console.log(username, password, desc, key, file);
-  // }, [username, password, desc, key, file]);
+  const generateMixedPassword = (length) => {
+    const charset =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?';
+    return generateRandomString(charset, length);
+  };
+
+  const generateRandomString = (charset, length) => {
+    let password = '';
+    const randomValues = new Uint8Array(length);
+    window.crypto.getRandomValues(randomValues);
+
+    for (let i = 0; i < length; i++) {
+      password += charset[randomValues[i] % charset.length];
+    }
+
+    return password;
+  };
+
+  const handleGenPass = () => {
+    let finalPassword = '';
+    if (selectedValue === 'text') {
+      finalPassword = generateTextPassword(20);
+    } else if (selectedValue === 'numbers') {
+      finalPassword = generateNumberPassword(20);
+    } else if (selectedValue === 'special') {
+      finalPassword = generateSpecialCharPassword(20);
+    } else if (selectedValue === 'all') {
+      finalPassword = generateMixedPassword(20);
+    }
+    console.log('Hashed Password:', finalPassword);
+    setFinalPassword(finalPassword);
+  };
+
   return (
     <Tabs defaultValue="encrypt" className="w-[95%]">
-      {/* <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="encrypt">Auto Generation</TabsTrigger>
-        <TabsTrigger value="decrypt">Manuel Generation</TabsTrigger>
-      </TabsList> */}
       <TabsContent value="encrypt">
         <Card>
           <CardHeader>
@@ -62,15 +86,18 @@ export function PassGeneration() {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex w-full max-w-sm items-center space-x-2">
-              <Input type="email" placeholder="Password" />
-              <Button // onClick={() => {
-                //   const cipherText = encrypt('hello guys', 'pass');
-                //   console.log(cipherText);
-                //   console.log(decrypt(cipherText, 'pass'));
-                // }}
-                type="submit"
-              >
+              <Input type="text" placeholder="Password" value={finalPassword} />
+              <Button type="submit" onClick={handleGenPass}>
                 Generate
+              </Button>
+              <Button
+                type="submit"
+                onClick={() => {
+                  navigator.clipboard.writeText(finalPassword);
+                  toast('Password copied to clipboard');
+                }}
+              >
+                <Copy />
               </Button>
             </div>
             <CardDescription>
@@ -80,48 +107,41 @@ export function PassGeneration() {
           <CardFooter>
             <RadioGroup defaultValue="all" className="flex">
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="text" id="text" />
+                <RadioGroupItem
+                  value="text"
+                  id="text"
+                  onClick={(e) => setSelectedValue(e.target.value)}
+                />
                 <Label htmlFor="text">Text</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="numbers" id="numbers" />
+                <RadioGroupItem
+                  value="numbers"
+                  id="numbers"
+                  onClick={(e) => setSelectedValue(e.target.value)}
+                />
                 <Label htmlFor="numbers">Numbers</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="special" id="special" />
+                <RadioGroupItem
+                  value="special"
+                  id="special"
+                  onClick={(e) => setSelectedValue(e.target.value)}
+                />
                 <Label htmlFor="special">Special Characters</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="all" id="all" />
+                <RadioGroupItem
+                  value="all"
+                  id="all"
+                  onClick={(e) => setSelectedValue(e.target.value)}
+                />
                 <Label htmlFor="all">Use All</Label>
               </div>
             </RadioGroup>
           </CardFooter>
         </Card>
-      </TabsContent>
-      <TabsContent value="decrypt">
-        <Card>
-          <CardHeader>
-            <CardTitle>Decryption</CardTitle>
-            <CardDescription>
-              Decryption requires a specific key that corresponds to the key
-              used for encryption. Without the correct key, decryption is
-              impossible.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="space-y-1">
-              <Input id="key" placeholder="Encryption key" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="name">Image for store Data.</Label>
-              <Input id="file" type="file" placeholder="Encryption key" />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button>Make Public</Button>
-          </CardFooter>
-        </Card>
+        <Toaster />
       </TabsContent>
     </Tabs>
   );

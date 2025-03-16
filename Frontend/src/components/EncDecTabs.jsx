@@ -30,11 +30,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { BarLoader, PulseLoader } from 'react-spinners';
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
+import { useAuth } from '@/context/AuthContext';
 
 export function EncDecTabs() {
   const [loadingEnc, setLoadingEnc] = useState(false);
   const [loadingDec, setLoadingDec] = useState(false);
   const [decryptedData, setDecryptedData] = useState(null);
+
+  const { uploadImage } = useAuth();
   const {
     username,
     setUsername,
@@ -82,7 +85,8 @@ export function EncDecTabs() {
           'pass'
         );
         setHiddenFile(encodedImage);
-        console.log(encodedImage);
+        // console.log(encodedImage);
+        uploadImage(encodedImage, 'pass');
         toast('Encryption Successfully Completed...');
         setLoadingEnc(false);
       }

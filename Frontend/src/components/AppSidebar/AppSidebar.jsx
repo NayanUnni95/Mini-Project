@@ -32,11 +32,11 @@ const items = [
     url: '/logs',
     icon: Logs,
   },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search,
-  },
+  // {
+  //   title: 'Search',
+  //   url: '#',
+  //   icon: Search,
+  // },
   {
     title: 'Settings',
     url: '#',

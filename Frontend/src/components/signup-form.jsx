@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
+import { Toaster } from '@/components/ui/sonner';
 
 export function LoginForm({ className, ...props }) {
   const [email, setEmail] = useState('');
@@ -28,7 +30,10 @@ export function LoginForm({ className, ...props }) {
     try {
       const { success, error } = await signUpNewUser(email, password);
       if (success) {
-        navigate('/');
+        toast('Account Created Successfully');
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
       }
     } catch (error) {
       console.log('There was an error in signup page : ', error);
@@ -134,6 +139,7 @@ export function LoginForm({ className, ...props }) {
           </form>
         </CardContent>
       </Card>
+      <Toaster />
     </div>
   );
 }
