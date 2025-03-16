@@ -1,4 +1,11 @@
-import { Home, Logs, Search, Settings, LayoutDashboard } from 'lucide-react';
+import {
+  Home,
+  Logs,
+  Search,
+  Settings,
+  LayoutDashboard,
+  GalleryVerticalEnd,
+} from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -12,8 +19,7 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { Link } from 'react-router-dom';
-import { Combobox } from '../Combobox';
-import { FooterCombobox } from '../FooterCombobox';
+import { NavUser } from '@/components/nav-user';
 // Menu items.
 const items = [
   {
@@ -37,31 +43,33 @@ const items = [
     icon: Settings,
   },
 ];
-const footer = [
-  {
-    title: 'Profile',
-    url: '/',
-    icon: Home,
+const data = {
+  user: {
+    name: 'Nayan',
+    email: 'nayanunni95@gmail.com',
+    avatar: '/avatars/shadcn.jpg',
   },
-  {
-    title: 'Setting',
-    url: '/',
-    icon: Home,
-  },
-  {
-    title: 'Logout',
-    url: '/',
-    icon: Home,
-  },
-];
+};
 
 function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <SidebarGroup>
-          <Combobox />
-        </SidebarGroup>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <Link to="/">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <GalleryVerticalEnd className="size-4" />
+                </div>
+                <div className="flex flex-col gap-0.5 leading-none">
+                  <span className="font-semibold">Password Manager</span>
+                  <span className="">v1.0.0</span>
+                </div>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -83,26 +91,7 @@ function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        {/* <SidebarGroup>
-          <FooterCombobox />
-        </SidebarGroup> */}
-        <SidebarGroup>
-          {/* <SidebarGroupLabel>Application</SidebarGroupLabel> */}
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {footer.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link to={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
   );

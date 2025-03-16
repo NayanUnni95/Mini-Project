@@ -1,8 +1,9 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import {
   encryptMessage,
   decryptMessage,
   cleanUpData,
+  convertToJson,
 } from '@/lib/dataManipulation';
 import {
   getBase64FromFile,
@@ -26,8 +27,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserDataContext } from '@/context/UserInfoContext';
 import { KeyRound, FileLock, ImageDown } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { BarLoader, PulseLoader } from 'react-spinners';
+import { toast } from 'sonner';
+import { Toaster } from '@/components/ui/sonner';
 
 export function EncDecTabs() {
+  const [loadingEnc, setLoadingEnc] = useState(false);
+  const [loadingDec, setLoadingDec] = useState(false);
+  const [decryptedData, setDecryptedData] = useState(null);
   const {
     username,
     setUsername,
@@ -54,6 +61,7 @@ export function EncDecTabs() {
     desc,
     selectedFile
   ) => {
+    setLoadingEnc(true);
     const stringData = cleanUpData(username, password, url, desc);
     try {
       if (
@@ -75,16 +83,24 @@ export function EncDecTabs() {
         );
         setHiddenFile(encodedImage);
         console.log(encodedImage);
+        toast('Encryption Successfully Completed...');
+        setLoadingEnc(false);
       }
     } catch (error) {
       console.log(error.message);
     }
   };
   const handleDecodeImage = async () => {
+    setLoadingDec(true);
     try {
       const base64Image = await getBase64FromFile(decryptFile);
       const decodedMessage = await decodeMessageFromImage(base64Image, 'pass');
-      console.log(decodedMessage);
+      // console.log(convertToJson(decodedMessage));
+      setDecryptedData(convertToJson(decodedMessage));
+      console.log(decryptedData);
+
+      setLoadingDec(false);
+      toast('Decryption Successfully Completed...');
     } catch (error) {
       console.log(error.message);
     }
@@ -170,7 +186,13 @@ export function EncDecTabs() {
                 handleEncodeImage(username, password, url, desc, selectedFile);
               }}
             >
-              Make Secure <FileLock />
+              {!loadingEnc ? (
+                <>
+                  Make Secure <FileLock />
+                </>
+              ) : (
+                <BarLoader color="#fff" loading={true} />
+              )}
             </Button>
             <Button onClick={() => handleSaveImage(hiddenFile)}>
               Save Image
@@ -207,34 +229,81 @@ export function EncDecTabs() {
           </CardContent>
           <CardFooter>
             <Button onClick={handleDecodeImage}>
-              Make Public <KeyRound />
+              {!loadingDec ? (
+                <>
+                  Make Public <KeyRound />
+                </>
+              ) : (
+                <PulseLoader color="#fff" loading={true} size={10} />
+              )}
             </Button>
           </CardFooter>
         </Card>
         <Card className="mt-[1rem]">
           <CardHeader>
-            <CardTitle>Decrypted Data</CardTitle>
+            <CardTitle>Decrypted Data </CardTitle>
           </CardHeader>
           <CardContent className=" grid grid-cols-2">
             <div className="m-[5px]">
-              <Skeleton className="h-4 w-[200px]" />
-              {/* <Input type="text" id="username" placeholder="username" /> */}
+              {decryptedData ? (
+                <Input
+                  type="text"
+                  // id="username"
+                  value={decryptedData.username}
+                  // placeholder="username"
+                  onClick={console.log('Copied')}
+                  disabled
+                />
+              ) : (
+                <Skeleton className="h-4 w-[200px]" />
+              )}
             </div>
             <div className="m-[5px]">
-              <Skeleton className="h-4 w-[200px]" />
-              {/* <Input type="text" id="password" placeholder="password" /> */}
+              {decryptedData ? (
+                <Input
+                  type="password"
+                  // id="username"
+                  value={decryptedData.password}
+                  // placeholder="password"
+                  onClick={console.log('Copied')}
+                  disabled
+                />
+              ) : (
+                <Skeleton className="h-4 w-[200px]" />
+              )}
             </div>
             <div className="m-[5px]">
-              <Skeleton className="h-4 w-[200px]" />
-              {/* <Input type="text" id="url" placeholder="url" /> */}
+              {decryptedData ? (
+                <Input
+                  type="text"
+                  // id="username"
+                  value={decryptedData.url}
+                  // placeholder="username"
+                  onClick={console.log('Copied')}
+                  disabled
+                />
+              ) : (
+                <Skeleton className="h-4 w-[200px]" />
+              )}
             </div>
             <div className="m-[5px]">
-              <Skeleton className="h-4 w-[200px]" />
-              {/* <Input type="text" id="desc" placeholder="desc" /> */}
+              {decryptedData ? (
+                <Input
+                  type="text"
+                  // id="username"
+                  value={decryptedData.desc}
+                  // placeholder="username"
+                  onClick={console.log('Copied')}
+                  disabled
+                />
+              ) : (
+                <Skeleton className="h-4 w-[200px]" />
+              )}
             </div>
           </CardContent>
         </Card>
       </TabsContent>
+      <Toaster />
     </Tabs>
   );
 }

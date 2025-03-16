@@ -21,4 +21,8 @@ const cleanUpData = (uname, pass, url, desc) => {
   return JSON.stringify(finalData);
 };
 
-export { encryptMessage, decryptMessage, cleanUpData };
+const convertToJson = (data) => {
+  return JSON.parse(data);
+};
+
+export { encryptMessage, decryptMessage, cleanUpData, convertToJson };
