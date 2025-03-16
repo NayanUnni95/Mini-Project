@@ -13,9 +13,9 @@ function UserInfoContext({ children }) {
   const [decryptData, setDecryptData] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
   const [imgSrc, setImgSrc] = useState(null);
-  useEffect(() => {
-    console.log(username, password, url, desc, selectedFile);
-  }, [username, password, url, desc, selectedFile]);
+  // useEffect(() => {
+  //   console.log(username, password, url, desc, selectedFile);
+  // }, [username, password, url, desc, selectedFile]);
 
   return (
     <UserDataContext.Provider

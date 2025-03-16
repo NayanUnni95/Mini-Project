@@ -3,9 +3,15 @@ import { EncDecTabs } from '@/components/EncDecTabs';
 import { PassGeneration } from '@/components/PassGeneration';
 import { UserDataContext } from '@/context/UserInfoContext';
 import { Image } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 function Home() {
   const { hiddenFile, imgSrc } = useContext(UserDataContext);
+  const { session } = useAuth();
+  useEffect(() => {
+    console.log(session);
+  }, [session]);
+
   return (
     <div className="w-full h-[100%] bg-gray-400 grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 p-[5px]">
       <div className="w-full flex justify-center pt-[0.5rem] bg-green-500 rounded-[0.5rem]">

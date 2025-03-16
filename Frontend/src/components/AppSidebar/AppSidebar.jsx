@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Link } from 'react-router-dom';
 import { Combobox } from '../Combobox';
+import { FooterCombobox } from '../FooterCombobox';
 // Menu items.
 const items = [
   {
@@ -82,8 +83,25 @@ function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        {/* <SidebarGroup>
+          <FooterCombobox />
+        </SidebarGroup> */}
         <SidebarGroup>
-          <Combobox />
+          {/* <SidebarGroupLabel>Application</SidebarGroupLabel> */}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {footer.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <Link to={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarFooter>
     </Sidebar>

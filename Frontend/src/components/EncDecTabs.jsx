@@ -25,6 +25,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserDataContext } from '@/context/UserInfoContext';
 import { KeyRound, FileLock, ImageDown } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function EncDecTabs() {
   const {
@@ -209,6 +210,29 @@ export function EncDecTabs() {
               Make Public <KeyRound />
             </Button>
           </CardFooter>
+        </Card>
+        <Card className="mt-[1rem]">
+          <CardHeader>
+            <CardTitle>Decrypted Data</CardTitle>
+          </CardHeader>
+          <CardContent className=" grid grid-cols-2">
+            <div className="m-[5px]">
+              <Skeleton className="h-4 w-[200px]" />
+              {/* <Input type="text" id="username" placeholder="username" /> */}
+            </div>
+            <div className="m-[5px]">
+              <Skeleton className="h-4 w-[200px]" />
+              {/* <Input type="text" id="password" placeholder="password" /> */}
+            </div>
+            <div className="m-[5px]">
+              <Skeleton className="h-4 w-[200px]" />
+              {/* <Input type="text" id="url" placeholder="url" /> */}
+            </div>
+            <div className="m-[5px]">
+              <Skeleton className="h-4 w-[200px]" />
+              {/* <Input type="text" id="desc" placeholder="desc" /> */}
+            </div>
+          </CardContent>
         </Card>
       </TabsContent>
     </Tabs>

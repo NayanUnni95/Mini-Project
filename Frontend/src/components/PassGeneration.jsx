@@ -12,6 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export function PassGeneration() {
@@ -52,67 +53,49 @@ export function PassGeneration() {
       <TabsContent value="encrypt">
         <Card>
           <CardHeader>
-            <CardTitle>Encryption</CardTitle>
+            <CardTitle>Generate Password</CardTitle>
             <CardDescription>
-              Encryption ensures that sensitive information remains confidential
-              and secure.
+              Making manuel password would be less secure than auto generation.
+              Use automatic password generator for more security. Keep your data
+              secure...
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            {/* <div className="space-y-1">
-              <Input
-                id="username"
-                value={username}
-                placeholder="username"
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div> */}
-            {/* <div className="space-y-1">
-              <Input
-                id="password"
-                value={password}
-                type="password"
-                placeholder="password"
-                onChange={(e) => setPassword(e.target.value)}
-              />
+            <div className="flex w-full max-w-sm items-center space-x-2">
+              <Input type="email" placeholder="Password" />
+              <Button // onClick={() => {
+                //   const cipherText = encrypt('hello guys', 'pass');
+                //   console.log(cipherText);
+                //   console.log(decrypt(cipherText, 'pass'));
+                // }}
+                type="submit"
+              >
+                Generate
+              </Button>
             </div>
-            <div className="space-y-1">
-              <Textarea
-                id="desc"
-                value={desc}
-                placeholder="Type your message here."
-                onChange={(e) => setDesc(e.target.value)}
-              />
-            </div> */}
-            {/* <div className="space-y-1">
-              <Input
-                id="key"
-                value={key}
-                placeholder="Encryption key"
-                onChange={(e) => setKey(e.target.value)}
-              />
-            </div> */}
-            {/* <div className="space-y-1">
-              <Label htmlFor="name">Image for store Data.</Label>
-              <Input
-                id="file"
-                value={file}
-                type="file"
-                placeholder="Encryption key"
-                onChange={(e) => setFile(e.target.value)}
-              />
-            </div> */}
+            <CardDescription>
+              Password will automatically apply to the input(password) field
+            </CardDescription>
           </CardContent>
           <CardFooter>
-            <Button
-            // onClick={() => {
-            //   const cipherText = encrypt('hello guys', 'pass');
-            //   console.log(cipherText);
-            //   console.log(decrypt(cipherText, 'pass'));
-            // }}
-            >
-              Generate
-            </Button>
+            <RadioGroup defaultValue="all" className="flex">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="text" id="text" />
+                <Label htmlFor="text">Text</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="numbers" id="numbers" />
+                <Label htmlFor="numbers">Numbers</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="special" id="special" />
+                <Label htmlFor="special">Special Characters</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="all" id="all" />
+                <Label htmlFor="all">Use All</Label>
+              </div>
+            </RadioGroup>
           </CardFooter>
         </Card>
       </TabsContent>
