@@ -54,7 +54,7 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
-  async function uploadImage(base64String, passkey) {
+  async function uploadImage(base64String, passkey, name) {
     const user = await getUser();
     if (!user) {
       console.error('User not logged in');
@@ -91,11 +91,18 @@ export const AuthContextProvider = ({ children }) => {
 
     // Get the public URL of the image
     const imageUrl = `${supabase.storageUrl}/storage/v1/object/public/stego-images/${filePath}`;
+    console.log('Image URL:', filePath);
 
     // Store image URL and passkey in Supabase DB
-    const { error: dbError } = await supabase
-      .from('stego_images')
-      .insert([{ user_id: user.id, image_url: imageUrl, passkey }]);
+    const { error: dbError } = await supabase.from('stego_images').insert([
+      {
+        user_id: user.id,
+        image_url: imageUrl,
+        passkey,
+        name: name,
+        filePath: filePath,
+      },
+    ]);
 
     if (dbError) {
       console.error('Error storing data:', dbError.message);
@@ -113,7 +120,7 @@ export const AuthContextProvider = ({ children }) => {
 
     const { data, error } = await supabase
       .from('stego_images')
-      .select('id, image_url, passkey')
+      .select('id, image_url, passkey, name, filePath')
       .eq('user_id', user.id);
 
     if (error) {
@@ -175,7 +182,13 @@ export const AuthContextProvider = ({ children }) => {
       console.log('Image and record deleted successfully!');
     }
   };
-
+  const generatePublicUrl = (filePath) => {
+    const { data } = supabase.storage
+      .from('stego-images')
+      .getPublicUrl(filePath);
+    // console.log(data.publicUrl);
+    return data.publicUrl;
+  };
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -198,6 +211,7 @@ export const AuthContextProvider = ({ children }) => {
         getUserImages,
         updatePasskey,
         deleteImage,
+        generatePublicUrl,
       }}
     >
       {children}

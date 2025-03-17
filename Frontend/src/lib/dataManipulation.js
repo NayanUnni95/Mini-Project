@@ -10,11 +10,11 @@ const decryptMessage = (cipherText, password) => {
   const bytes = CryptoJS.AES.decrypt(cipherText, password);
   return bytes.toString(CryptoJS.enc.Utf8);
 };
-const cleanUpData = (uname, pass, url, desc) => {
+const cleanUpData = (uname, pass, name, desc) => {
   const finalData = {
     username: uname,
     password: pass,
-    url: url,
+    // name: name,
     desc: desc,
     primaryKey: Date.now(),
   };

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   encryptMessage,
   decryptMessage,
@@ -20,6 +20,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -37,14 +46,14 @@ export function EncDecTabs() {
   const [loadingDec, setLoadingDec] = useState(false);
   const [decryptedData, setDecryptedData] = useState(null);
 
-  const { uploadImage } = useAuth();
+  const { uploadImage, getUserImages, generatePublicUrl } = useAuth();
   const {
     username,
     setUsername,
     password,
     setPassword,
-    url,
-    setUrl,
+    name,
+    setName,
     desc,
     setDesc,
     selectedFile,
@@ -55,17 +64,30 @@ export function EncDecTabs() {
     setDecryptFile,
     imgSrc,
     setImgSrc,
+    listData,
+    setListData,
   } = useContext(UserDataContext);
 
+  const clearDataField = () => {
+    setUsername('');
+    setPassword('');
+    setName('');
+    setDesc('');
+    setSelectedFile(null);
+    setHiddenFile(null);
+    setDecryptFile(null);
+    setDecryptedData(null);
+    setImgSrc(null);
+  };
   const handleEncodeImage = async (
     username,
     password,
-    url,
+    name,
     desc,
     selectedFile
   ) => {
     setLoadingEnc(true);
-    const stringData = cleanUpData(username, password, url, desc);
+    const stringData = cleanUpData(username, password, name, desc);
     try {
       if (
         typeof selectedFile === 'string' &&
@@ -86,7 +108,8 @@ export function EncDecTabs() {
         );
         setHiddenFile(encodedImage);
         // console.log(encodedImage);
-        uploadImage(encodedImage, 'pass');
+        uploadImage(encodedImage, 'pass', name);
+        clearDataField();
         toast('Encryption Successfully Completed...');
         setLoadingEnc(false);
       }
@@ -120,11 +143,52 @@ export function EncDecTabs() {
       reader.readAsDataURL(file);
     }
   };
+  const handleSelectImage = async () => {
+    const data = await getUserImages();
+    if (data) {
+      setListData(data);
+    }
+    // console.log(data);
+  };
+  const fetchFileFromURL = async (fileUrl) => {
+    try {
+      const response = await fetch(fileUrl);
+      const blob = await response.blob();
+      return new File([blob], 'downloaded.png', { type: blob.type });
+    } catch (error) {
+      console.error('Error fetching file:', error);
+    }
+  };
+  const handleSelection = async (e) => {
+    console.log(e);
+    // setDecryptFile(fetchFileFromURL(generatePublicUrl(e)));
+    const result = await fetchFileFromURL(generatePublicUrl(e));
+    setDecryptFile(result);
+    console.log(result);
+
+    console.log(generatePublicUrl(e));
+
+    // handleDecodeImage();
+  };
+  useEffect(() => {
+    console.log(listData);
+  }, [listData]);
   return (
     <Tabs defaultValue="encrypt" className="w-[95%]">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="encrypt">Encryption</TabsTrigger>
-        <TabsTrigger value="decrypt">Decryption</TabsTrigger>
+        <TabsTrigger
+          value="decrypt"
+          onClick={() => {
+            if (!listData) {
+              console.log('loaded');
+              handleSelectImage();
+              // console.log(listData);
+            }
+          }}
+        >
+          Decryption
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="encrypt">
         <Card className="w-full">
@@ -156,9 +220,10 @@ export function EncDecTabs() {
             <div className="space-y-1">
               <Input
                 id="url"
-                value={url}
-                placeholder="url"
-                onChange={(e) => setUrl(e.target.value)}
+                value={name}
+                type="text"
+                placeholder="Platform Name"
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div className="space-y-1">
@@ -187,7 +252,7 @@ export function EncDecTabs() {
             <Button
               onClick={() => {
                 // console.log(cleanUpData(username, password, url, desc));
-                handleEncodeImage(username, password, url, desc, selectedFile);
+                handleEncodeImage(username, password, name, desc, selectedFile);
               }}
             >
               {!loadingEnc ? (
@@ -217,10 +282,26 @@ export function EncDecTabs() {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="space-y-1">
-              <Input id="key" placeholder="Encryption key" />
+              <Select onValueChange={handleSelection}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select the corresponding platform name" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Names</SelectLabel>
+                    {listData?.map((item) => {
+                      return (
+                        <SelectItem key={item.id} value={item.filePath}>
+                          {item.name}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-1">
-              <Label htmlFor="name">Image for store Data.</Label>
+              <Label htmlFor="name">Select from local storage</Label>
               <Input
                 id="file"
                 type="file"
@@ -232,10 +313,15 @@ export function EncDecTabs() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button onClick={handleDecodeImage}>
+            <Button
+              onClick={() => {
+                handleSelectImage();
+                handleDecodeImage();
+              }}
+            >
               {!loadingDec ? (
                 <>
-                  Make Public <KeyRound />
+                  Decrypt <KeyRound />
                 </>
               ) : (
                 <PulseLoader color="#fff" loading={true} size={10} />

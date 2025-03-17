@@ -25,7 +25,7 @@ export function LoginForm({ className, ...props }) {
     setLoading(true);
     try {
       const { success, error } = await signInUser(email, password);
-      // if (success) navigate('/');
+      if (success) navigate('/');
     } catch (error) {
       console.log('There was an error in login page : ', error);
       setError(true);

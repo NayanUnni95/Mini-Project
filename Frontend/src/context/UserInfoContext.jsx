@@ -5,7 +5,7 @@ export const UserDataContext = createContext();
 function UserInfoContext({ children }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [url, setUrl] = useState('');
+  const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [hiddenFile, setHiddenFile] = useState(null);
@@ -13,9 +13,10 @@ function UserInfoContext({ children }) {
   const [decryptData, setDecryptData] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
   const [imgSrc, setImgSrc] = useState(null);
+  const [listData, setListData] = useState(null);
   // useEffect(() => {
-  //   console.log(username, password, url, desc, selectedFile);
-  // }, [username, password, url, desc, selectedFile]);
+  //   console.log(username, password, name, desc, selectedFile);
+  // }, [username, password, name, desc, selectedFile]);
 
   return (
     <UserDataContext.Provider
@@ -24,8 +25,8 @@ function UserInfoContext({ children }) {
         setUsername,
         password,
         setPassword,
-        url,
-        setUrl,
+        name,
+        setName,
         desc,
         setDesc,
         selectedFile,
@@ -40,6 +41,8 @@ function UserInfoContext({ children }) {
         setImgSrc,
         isLogged,
         setIsLogged,
+        listData,
+        setListData,
       }}
     >
       {children}

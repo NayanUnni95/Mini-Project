@@ -28,7 +28,7 @@ const items = [
     icon: LayoutDashboard,
   },
   {
-    title: 'Logs',
+    title: 'Wallets',
     url: '/logs',
     icon: Logs,
   },
